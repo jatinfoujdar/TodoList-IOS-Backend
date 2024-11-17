@@ -20,7 +20,7 @@ app.post("/signup", async (req, res) => {
     const { name, email, password } = req.body;
 
     if (!(email && password && name)) {
-      res.status(400).send("All fields are required");
+      return res.status(400).send("All fields are required");
     }
 
     const existingUser = await User.findOne({ email });
@@ -31,7 +31,7 @@ app.post("/signup", async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = await User.create({ name, email, password: hashedPassword });
 
-    res.status(201).send("User created successfully");
+    res.status(201).send({ message: "User created successfully", user: { name, email } });
   } catch (error) {
     console.error(error);
     res.status(500).send("Internal Server Error");
